@@ -1,6 +1,22 @@
+import { useSelector, useDispatch } from 'react-redux';
+import { deleteContact } from '../../redux/actions';
 import s from './ContactList.module.css';
 import PropTypes from 'prop-types';
-const ContactList = ({ contacts, onDeleteContact }) => {
+
+const ContactList = () => {
+  const dispatch = useDispatch();
+  const onDeleteContact = id => dispatch(deleteContact(id));
+
+  const getContactList = state => {
+    const { filter, items } = state.contacts;
+    const normalizedFilter = filter.toLowerCase();
+
+    return items.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter),
+    );
+  };
+  const contacts = useSelector(getContactList);
+
   return (
     <table className={s.table}>
       <tbody>
@@ -27,6 +43,5 @@ ContactList.propTypes = {
       number: PropTypes.string.isRequired,
     }),
   ),
-  onDeleteContact: PropTypes.func.isRequired,
 };
 export default ContactList;
